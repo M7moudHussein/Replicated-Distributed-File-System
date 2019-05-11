@@ -1,4 +1,4 @@
-package master_server;
+package masterserver;
 
 
 public class ReplicaLoc {
