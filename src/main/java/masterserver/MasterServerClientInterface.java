@@ -1,5 +1,8 @@
 package masterserver;
 
+import replicaserver.ReplicaMetadata;
+import replicaserver.WriteMessage;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.Remote;
@@ -26,6 +29,6 @@ public interface MasterServerClientInterface extends Remote {
      * @throws RemoteException
      * @throws IOException
      */
-    public WriteMsg write(String fileName, FileContent data) throws RemoteException, IOException;
+    public WriteMessage write(String fileName, FileContent data) throws RemoteException, IOException;
 
 }

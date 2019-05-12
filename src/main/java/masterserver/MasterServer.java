@@ -1,6 +1,8 @@
 package masterserver;
 
 
+import replicaserver.ReplicaMetadata;
+
 import java.util.List;
 
 public class MasterServer {

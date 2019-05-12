@@ -1,14 +1,14 @@
-package masterserver;
+package replicaserver;
 
 
-public class WriteMsg {
+public class WriteMessage {
 
 	private long transactionId;
 	private  long timeStamp;
 	private ReplicaMetadata loc;
 
 	
-	public WriteMsg(long transactionId, long timeStamp, ReplicaMetadata loc) {
+	public WriteMessage(long transactionId, long timeStamp, ReplicaMetadata loc) {
 		this.transactionId = transactionId;
 		this.timeStamp = timeStamp;
 		this.loc = loc;

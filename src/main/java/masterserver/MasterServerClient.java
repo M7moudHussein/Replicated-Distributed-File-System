@@ -1,5 +1,8 @@
 package masterserver;
 
+import replicaserver.ReplicaMetadata;
+import replicaserver.WriteMessage;
+
 import java.io.*;
 import java.rmi.AlreadyBoundException;
 import java.rmi.registry.LocateRegistry;
@@ -77,9 +80,7 @@ public class MasterServerClient implements MasterServerClientInterface {
         if (replicas.size() < NUMBER_OF_FILE_REPLICAS)
             throw new RuntimeException("Not Sufficient number of replicas");
 
-        RemoteServer remoteServer = (RemoteServer) UnicastRemoteObject.exportObject(this, port);
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.bind(lookup, remoteServer);
+
 
         Thread heartbeatThread = new Thread(this::heartBeatChecking);
 
@@ -114,7 +115,7 @@ public class MasterServerClient implements MasterServerClientInterface {
     }
 
     @Override
-    public WriteMsg write(String fileName, FileContent data) {
+    public WriteMessage write(String fileName, FileContent data) {
 
         ++timeStamp;
 
@@ -123,7 +124,7 @@ public class MasterServerClient implements MasterServerClientInterface {
         }
 
 
-        return new WriteMsg(++transactionId, timeStamp, fileDistributionMap.get(fileName).getPrimaryRep());
+        return new WriteMessage(++transactionId, timeStamp, fileDistributionMap.get(fileName).getPrimaryRep());
     }
 
 

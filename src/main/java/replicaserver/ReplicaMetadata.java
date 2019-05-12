@@ -1,4 +1,4 @@
-package masterserver;
+package replicaserver;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,5 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReplicaMetadata {
     private String ip, dir;
-    private int port;
+    private int port, identifer;
 }
