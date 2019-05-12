@@ -3,6 +3,11 @@ package masterserver;
 import replicaserver.ReplicaMetadata;
 import replicaserver.ReplicaServer;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteServer;
@@ -13,26 +18,14 @@ import java.util.List;
 public class ServerMain {
     private static final int WAIT_INTERVAL = 5000;
     private static final String REPLICA_SERVERS_DATA_FILE = "repServers.txt";
-    private List<ReplicaMetadata> replicasMetadata;
 
-    private String lookup;
-    private Registry registry;
-
-
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
 
         if(args.length == 0)
             throw new RuntimeException("Not enough args");
 
-        int port = Integer.valueOf(args[0]);
-
-        startReplicaServers();
+        List<ReplicaMetadata> replicasMetadata =  parseReplicaMetaData();
         List<Thread> replicasThread = new ArrayList<>();
-
-        RemoteServer remoteServer = (RemoteServer) UnicastRemoteObject.exportObject(new MasterServerClient(port, lookup), port);
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.bind(lookup, remoteServer);
-
 
         for (ReplicaMetadata replicaMetadata : replicasMetadata) {
             ReplicaServer replica = new ReplicaServer(replicaMetadata);
@@ -47,13 +40,12 @@ public class ServerMain {
     }
 
 
-    public void parseReplicaMetaData() throws IOException {
-        replicas = new ArrayList<>();
+    static  public List<ReplicaMetadata> parseReplicaMetaData() throws IOException {
+        List<ReplicaMetadata>  replicasMetadata= new ArrayList<>();
         FileReader fr = new FileReader(new File(REPLICA_SERVERS_DATA_FILE));
         BufferedReader br = new BufferedReader(fr);
 
-        // 192.168.1.2:4040, /home/user/workplace/ReplicaApp
-
+        int serverID = 1;
         for (String line = br.readLine(); line != null; line = br.readLine()) {
             line = line.trim();
             if (line.isEmpty())
@@ -75,9 +67,11 @@ public class ServerMain {
                 dir = data[1];
             }
 
-            replicasMetadata.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port)));
+            replicasMetadata.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), serverID++));
         }
         br.close();
         fr.close();
+
+        return  replicasMetadata;
     }
 }

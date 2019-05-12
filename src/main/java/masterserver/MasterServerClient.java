@@ -16,19 +16,16 @@ public class MasterServerClient implements MasterServerClientInterface {
     private static final int NUMBER_OF_FILE_REPLICAS = 3;
     private Map<String, FileDistribution> fileDistributionMap;
     private boolean isTerminated = false;
-
+    private List<ReplicaMetadata> replicas;
 
     private long timeStamp = 0;
     private long transactionId = 0;
-
-
 
     public void heartBeatChecking() {
         while (!isTerminated) {
 //			for(ReplicaMetadata rep: replicas) {
 //				// ssh or rmi
 //			}
-
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -38,16 +35,12 @@ public class MasterServerClient implements MasterServerClientInterface {
     }
 
 
-    public MasterServerClient(int port, String lookup) throws IOException,
-            AlreadyBoundException, InterruptedException {
+    public MasterServerClient(List<ReplicaMetadata> replicas) throws InterruptedException {
         fileDistributionMap = new HashMap<String, FileDistribution>();
         if (replicas.size() < NUMBER_OF_FILE_REPLICAS)
             throw new RuntimeException("Not Sufficient number of replicas");
-
-
+        this.replicas = replicas;
         Thread heartbeatThread = new Thread(this::heartBeatChecking);
-
-
         heartbeatThread.join();
     }
 
