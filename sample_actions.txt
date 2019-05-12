@@ -1,0 +1,4 @@
+write;file_1.txt;Hello world
+write;file_2.txt;Wooby Dooby Mooby
+read;file_1.txt
+read;file_2.txt

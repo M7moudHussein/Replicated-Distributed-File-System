@@ -52,7 +52,7 @@ public class MasterServerClient implements MasterServerClientInterface {
                 dir = data[1];
             }
 
-            replicas.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port)));
+            replicas.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), 0));
         }
         br.close();
         fr.close();

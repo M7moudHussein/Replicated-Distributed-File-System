@@ -17,9 +17,9 @@ public class ServerMain {
         List<ReplicaMetadata> replicasMetadata = parseReplicaMetaData();
         List<Thread> replicasThread = new ArrayList<>();
 
-        RemoteServer remoteServer = (RemoteServer) UnicastRemoteObject.exportObject(this, port);
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.bind(lookup, remoteServer);
+//        RemoteServer remoteServer = (RemoteServer) UnicastRemoteObject.exportObject(this, port);
+//        Registry registry = LocateRegistry.createRegistry(port);
+//        registry.bind(lookup, remoteServer);
 
         for (ReplicaMetadata replicaMetadata : replicasMetadata) {
             ReplicaServer replica = new ReplicaServer(replicaMetadata);
