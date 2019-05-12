@@ -13,9 +13,7 @@ import java.util.*;
 
 public class MasterServerClient implements MasterServerClientInterface {
 
-    private static final String REPLICA_SERVERS_DATA_FILE = "repServers.txt";
     private static final int NUMBER_OF_FILE_REPLICAS = 3;
-    private List<ReplicaMetadata> replicas;
     private Map<String, FileDistribution> fileDistributionMap;
     private boolean isTerminated = false;
 
@@ -24,44 +22,11 @@ public class MasterServerClient implements MasterServerClientInterface {
     private long transactionId = 0;
 
 
-    public void startReplicaServers() throws IOException {
-        replicas = new ArrayList<>();
-        FileReader fr = new FileReader(new File(REPLICA_SERVERS_DATA_FILE));
-        BufferedReader br = new BufferedReader(fr);
-
-        // 192.168.1.2:4040, /home/user/workplace/ReplicaApp
-
-        for (String line = br.readLine(); line != null; line = br.readLine()) {
-            line = line.trim();
-            if (line.isEmpty())
-                continue;
-
-            String[] data = line.split(",");
-
-            assert data.length < 3 && data.length > 0 : String.format("line \"%s\" must be on the form\"ip:port(, appDirectory)\"", line);
-
-            String[] address = data[0].split(":");
-
-            assert address.length == 2 : String.format("Address \"%s\" must be on the form \"192.168.1.1:4040\"", data[0]);
-
-            String ip = address[0];
-            String port = address[1];
-
-            String dir = "~";
-            if (data.length == 2) {
-                dir = data[1];
-            }
-
-            replicas.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), 0));
-        }
-        br.close();
-        fr.close();
-    }
 
     public void heartBeatChecking() {
         while (!isTerminated) {
 //			for(ReplicaMetadata rep: replicas) {
-//				// ssh or rmi 
+//				// ssh or rmi
 //			}
 
             try {
@@ -76,10 +41,8 @@ public class MasterServerClient implements MasterServerClientInterface {
     public MasterServerClient(int port, String lookup) throws IOException,
             AlreadyBoundException, InterruptedException {
         fileDistributionMap = new HashMap<String, FileDistribution>();
-        startReplicaServers();
         if (replicas.size() < NUMBER_OF_FILE_REPLICAS)
             throw new RuntimeException("Not Sufficient number of replicas");
-
 
 
         Thread heartbeatThread = new Thread(this::heartBeatChecking);
