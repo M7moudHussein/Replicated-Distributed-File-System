@@ -5,10 +5,10 @@ public class WriteMsg {
 
 	private long transactionId;
 	private  long timeStamp;
-	private ReplicaLoc loc;
+	private ReplicaMetadata loc;
 
 	
-	public WriteMsg(long transactionId, long timeStamp, ReplicaLoc loc) {
+	public WriteMsg(long transactionId, long timeStamp, ReplicaMetadata loc) {
 		this.transactionId = transactionId;
 		this.timeStamp = timeStamp;
 		this.loc = loc;
@@ -35,12 +35,12 @@ public class WriteMsg {
 	}
 
 
-	public ReplicaLoc getLoc() {
+	public ReplicaMetadata getLoc() {
 		return loc;
 	}
 
 
-	public void setLoc(ReplicaLoc loc) {
+	public void setLoc(ReplicaMetadata loc) {
 		this.loc = loc;
 	}
 	

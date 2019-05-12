@@ -12,7 +12,7 @@ public class MasterServerClient implements MasterServerClientInterface {
 
     private static final String REPLICA_SERVERS_DATA_FILE = "repServers.txt";
     private static final int NUMBER_OF_FILE_REPLICAS = 3;
-    private List<ReplicaLoc> replicas;
+    private List<ReplicaMetadata> replicas;
     private Map<String, FileDistribution> fileDistributionMap;
     private boolean isTerminated = false;
 
@@ -49,7 +49,7 @@ public class MasterServerClient implements MasterServerClientInterface {
                 dir = data[1];
             }
 
-            replicas.add(new ReplicaLoc(ip, dir, Integer.valueOf(port)));
+            replicas.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port)));
         }
         br.close();
         fr.close();
@@ -57,7 +57,7 @@ public class MasterServerClient implements MasterServerClientInterface {
 
     public void heartBeatChecking() {
         while (!isTerminated) {
-//			for(ReplicaLoc rep: replicas) {
+//			for(ReplicaMetadata rep: replicas) {
 //				// ssh or rmi 
 //			}
 
@@ -89,7 +89,7 @@ public class MasterServerClient implements MasterServerClientInterface {
 
 
     @Override
-    public ReplicaLoc[] read(String fileName) throws IOException {
+    public ReplicaMetadata[] read(String fileName) throws IOException {
         if (!fileDistributionMap.containsKey(fileName))
             throw new FileNotFoundException();
 
@@ -99,7 +99,7 @@ public class MasterServerClient implements MasterServerClientInterface {
 
     private void createFile(String fileName) {
         Random random = new Random();
-        ReplicaLoc[] fileReplicas = new ReplicaLoc[NUMBER_OF_FILE_REPLICAS];
+        ReplicaMetadata[] fileReplicas = new ReplicaMetadata[NUMBER_OF_FILE_REPLICAS];
         Set<Integer> takenReplica = new HashSet<>();
         for (int i = 0; i < NUMBER_OF_FILE_REPLICAS; ++i) {
             int curIdx = random.nextInt(replicas.size());

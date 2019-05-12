@@ -9,6 +9,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class FileDistribution {
-    private ReplicaLoc primaryRep;
-    private ReplicaLoc[] replicas;
+    private ReplicaMetadata primaryRep;
+    private ReplicaMetadata[] replicas;
 }
