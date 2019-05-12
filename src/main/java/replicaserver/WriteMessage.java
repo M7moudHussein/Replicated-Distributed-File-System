@@ -1,7 +1,9 @@
 package replicaserver;
 
 
-public class WriteMessage {
+import java.io.Serializable;
+
+public class WriteMessage implements Serializable {
 
 	private long transactionId;
 	private  long timeStamp;

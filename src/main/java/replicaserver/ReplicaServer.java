@@ -18,7 +18,6 @@ public class ReplicaServer {
     public void runServer() {
         try {
             ReplicaServerClientInterface obj = new ReplicaServerClient();
-            LocateRegistry.createRegistry(REGISTRY_PORT);
             Naming.rebind(getDomainName(), obj);
         } catch (RemoteException e) {
             System.out.println("[Replication ID:" + replicaMetadata.getIdentifer() + "] Remote exception during binding the object");

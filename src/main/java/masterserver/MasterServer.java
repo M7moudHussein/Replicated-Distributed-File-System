@@ -20,7 +20,6 @@ public class MasterServer {
 
     public void runMaster() {
         try {
-            LocateRegistry.createRegistry(1900);
             Naming.rebind(MasterServer.DOMAIN_NAME, new MasterServerClient(replicasMetadata));
         } catch (RemoteException e) {
             e.printStackTrace();

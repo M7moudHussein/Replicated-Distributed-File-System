@@ -1,6 +1,8 @@
 package masterserver;
 
 
-public class FileContent {
+import java.io.Serializable;
+
+public class FileContent implements Serializable {
     private String fileName;
 }

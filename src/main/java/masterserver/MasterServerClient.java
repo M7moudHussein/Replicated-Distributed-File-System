@@ -5,13 +5,14 @@ import replicaserver.WriteMessage;
 
 import java.io.*;
 import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class MasterServerClient implements MasterServerClientInterface {
+public class MasterServerClient extends UnicastRemoteObject implements MasterServerClientInterface {
 
     private static final int NUMBER_OF_FILE_REPLICAS = 3;
     private Map<String, FileDistribution> fileDistributionMap;
@@ -35,7 +36,8 @@ public class MasterServerClient implements MasterServerClientInterface {
     }
 
 
-    public MasterServerClient(List<ReplicaMetadata> replicas) throws InterruptedException {
+    public MasterServerClient(List<ReplicaMetadata> replicas) throws InterruptedException, RemoteException {
+        super();
         fileDistributionMap = new HashMap<String, FileDistribution>();
         if (replicas.size() < NUMBER_OF_FILE_REPLICAS)
             throw new RuntimeException("Not Sufficient number of replicas");
@@ -48,7 +50,7 @@ public class MasterServerClient implements MasterServerClientInterface {
     @Override
     public ReplicaMetadata[] read(String fileName) throws IOException {
         if (!fileDistributionMap.containsKey(fileName))
-            throw new FileNotFoundException();
+            throw new FileNotFoundException(fileName);
 
         ++timeStamp;
         return fileDistributionMap.get(fileName).getReplicas();

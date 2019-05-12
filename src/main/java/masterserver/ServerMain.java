@@ -21,8 +21,7 @@ public class ServerMain {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        if(args.length == 0)
-            throw new RuntimeException("Not enough args");
+        LocateRegistry.createRegistry(1900);
 
         List<ReplicaMetadata> replicasMetadata =  parseReplicaMetaData();
         List<Thread> replicasThread = new ArrayList<>();
@@ -59,13 +58,16 @@ public class ServerMain {
 
             assert address.length == 2 : String.format("Address \"%s\" must be on the form \"192.168.1.1:4040\"", data[0]);
 
-            String ip = address[0];
-            String port = address[1];
+            String ip = address[0].trim();
+            String port = address[1].trim();
 
             String dir = "~";
             if (data.length == 2) {
-                dir = data[1];
+                dir = data[1].trim();
             }
+
+            if(dir.isEmpty())
+                dir = "~";
 
             replicasMetadata.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), serverID++));
         }
