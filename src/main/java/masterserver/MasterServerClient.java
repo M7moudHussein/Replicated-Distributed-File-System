@@ -10,44 +10,46 @@ import java.util.*;
 
 public class MasterServerClient implements MasterServerClientInterface {
 
-    public static final String REPLICA_SERVERS_DATA_FILE = "repServers.txt";
-    public static final int NUMBER_OF_FILE_REPLICAS = 3;
+    private static final String REPLICA_SERVERS_DATA_FILE = "repServers.txt";
+    private static final int NUMBER_OF_FILE_REPLICAS = 3;
     private List<ReplicaLoc> replicas;
     private Map<String, FileDistribution> fileDistributionMap;
-    Thread heartbeatThread;
     private boolean isTerminated = false;
 
 
-    private Registry registry;
-
-
-    long timeStamp = 0;
-    long transactionId = 0;
+    private long timeStamp = 0;
+    private long transactionId = 0;
 
 
     public void startReplicaServers() throws IOException {
         replicas = new ArrayList<>();
         FileReader fr = new FileReader(new File(REPLICA_SERVERS_DATA_FILE));
-        @SuppressWarnings("resource")
         BufferedReader br = new BufferedReader(fr);
 
-        String line = br.readLine();
-        for (; line != null; line = br.readLine()) {
+        // 192.168.1.2:4040, /home/user/workplace/ReplicaApp
+
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
             line = line.trim();
             if (line.isEmpty())
                 continue;
 
             String[] data = line.split(",");
 
-            if (data.length > 3)
-                throw new RuntimeException("There is line has more than one comma");
+            assert data.length < 3 && data.length > 0 : String.format("line \"%s\" must be on the form\"ip:port(, appDirectory)\"", line);
 
-            String ip = data[0];
-            String dir = data.length == 2 ? data[1] : "~";
-            int port = data.length == 3 ? Integer.valueOf(data[1]) : 8080;
+            String[] address = data[0].split(":");
 
-            // starting each replica (call start in replica interface or using command)
-            replicas.add(new ReplicaLoc(ip, dir, port));
+            assert address.length == 2 : String.format("Address \"%s\" must be on the form \"192.168.1.1:4040\"", data[0]);
+
+            String ip = address[0];
+            String port = address[1];
+
+            String dir = "~";
+            if (data.length == 2) {
+                dir = data[1];
+            }
+
+            replicas.add(new ReplicaLoc(ip, dir, Integer.valueOf(port)));
         }
         br.close();
         fr.close();
@@ -76,10 +78,10 @@ public class MasterServerClient implements MasterServerClientInterface {
             throw new RuntimeException("Not Sufficient number of replicas");
 
         RemoteServer remoteServer = (RemoteServer) UnicastRemoteObject.exportObject(this, port);
-        registry = LocateRegistry.createRegistry(port);
+        Registry registry = LocateRegistry.createRegistry(port);
         registry.bind(lookup, remoteServer);
 
-        heartbeatThread = new Thread(this::heartBeatChecking);
+        Thread heartbeatThread = new Thread(this::heartBeatChecking);
 
 
         heartbeatThread.join();
