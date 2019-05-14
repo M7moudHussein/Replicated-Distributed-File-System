@@ -59,8 +59,9 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         try {
             fileContent = readFileContent(fileName);
         } catch (Exception e) {
-            fileLock.unlock();
             throw e;
+        } finally {
+            fileLock.unlock();
         }
         fileLock.unlock();
         return new FileData(fileName, fileContent);
