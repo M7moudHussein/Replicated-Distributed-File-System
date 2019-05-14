@@ -1,9 +1,11 @@
 package replicaserver;
 
 import masterserver.FileData;
+import masterserver.FileDistribution;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -17,11 +19,13 @@ public interface ReplicaServerClientInterface extends Remote {
      *            message sequence number 1.
      * @param data
      *            : data to write in the file
+     * @param distribution
+     *            : contains the meta data of the replicas that has this file
      * @return message with required info
      * @throws IOException
      * @throws RemoteException
      */
-    public WriteMessage write(long txnID, long msgSeqNum, FileData data) throws RemoteException, IOException;
+    public WriteMessage write(long txnID, long msgSeqNum, FileData data, FileDistribution distribution) throws RemoteException, IOException, NotBoundException;
 
     public FileData read(String fileName) throws FileNotFoundException, RemoteException, IOException;
 

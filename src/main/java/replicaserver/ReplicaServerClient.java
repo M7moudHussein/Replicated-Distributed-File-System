@@ -1,11 +1,13 @@
 package replicaserver;
 
 import masterserver.FileData;
+import masterserver.FileDistribution;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
@@ -33,20 +35,26 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
     }
 
     @Override
-    public WriteMessage write(long txnID, long msgSeqNum, FileData data) throws IOException {
-        // initial simple implementation for testing
+    public WriteMessage write(long txnID, long msgSeqNum, FileData data, FileDistribution distribution) throws IOException, NotBoundException {
         fileLocks.putIfAbsent(data.getFileName(), new ReentrantLock());
         Lock fileLock = fileLocks.get(data.getFileName());
         fileLock.lock();
         try {
             appendToFile(data);
         } catch (IOException e) {
-            e.printStackTrace();
             throw e;
         }
         finally{
             fileLock.unlock();
         }
+
+        if(loc.getDomainName().equals(distribution.getPrimaryRep().getDomainName())){
+            // This is a primary replica for this file, write to non-primary replicas
+            for(ReplicaMetadata replica : distribution.getReplicas())
+                if(replica.getIdentifer() != loc.getIdentifer())
+                    replica.getReplicaInterface().write(txnID, msgSeqNum, data, distribution);
+        }
+
         return new WriteMessage(txnID, msgSeqNum, loc, null);
     }
 

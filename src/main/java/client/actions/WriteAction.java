@@ -47,13 +47,16 @@ public class WriteAction implements Action {
         WriteMessage result;
         try {
             result = primaryReplicaInterface.write(writeMessage.getTransactionId(),
-                    1, data);
+                    1, data, writeMessage.getFileDistribution());
         } catch (RemoteException e) {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_REMOTE_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_IO_EXCEPTION);
+        } catch (NotBoundException e){
+            e.printStackTrace();
+            return new Response(ResponseError.REPLICA_NOT_BOUND);
         }
         return new Response(result.toString());
     }

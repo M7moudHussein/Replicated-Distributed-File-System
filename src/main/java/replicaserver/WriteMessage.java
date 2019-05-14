@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class WriteMessage implements Serializable {
 
 	private long transactionId;
-	private  long timeStamp;
+	private long timeStamp;
 	private ReplicaMetadata loc;
 	private FileDistribution fileDistribution;
 
