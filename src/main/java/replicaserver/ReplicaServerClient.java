@@ -28,7 +28,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
 
     private void appendToFile(FileData data) throws IOException {
         FileWriter fw = new FileWriter(getFilePath(data.getFileName()).toString(), true);
-        fw.write(data.getFileContent());
+        fw.write(data.getFileContent() + "\n");
         fw.close();
     }
 
@@ -63,7 +63,6 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         } finally {
             fileLock.unlock();
         }
-        fileLock.unlock();
         return new FileData(fileName, fileContent);
     }
 
