@@ -18,7 +18,7 @@ public interface MasterServerClientInterface extends Remote {
      * @throws IOException
      * @throws RemoteException
      */
-    public ReplicaMetadata read(String fileName) throws FileNotFoundException, RemoteException;
+    public ReplicaMetadata[] read(String fileName) throws FileNotFoundException, RemoteException;
 
     /**
      * Start a new write transaction

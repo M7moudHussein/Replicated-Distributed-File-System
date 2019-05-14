@@ -21,7 +21,7 @@ public class ReadAction implements Action {
     public Response executeAction(MasterServerClientInterface masterServerClientInterface) {
         ReplicaMetadata primaryReplicaMetadata = null;
         try {
-            primaryReplicaMetadata = masterServerClientInterface.read(fileName);
+            primaryReplicaMetadata = masterServerClientInterface.read(fileName)[0];
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return new Response(ResponseError.FILE_NOT_FOUND);

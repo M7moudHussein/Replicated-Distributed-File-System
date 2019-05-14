@@ -46,13 +46,13 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
     }
 
     @Override
-    public ReplicaMetadata read(String fileName) throws FileNotFoundException, RemoteException {
+    public ReplicaMetadata[] read(String fileName) throws FileNotFoundException, RemoteException {
         if (!fileDistributionMap.containsKey(fileName)) {
             throw new FileNotFoundException(fileName);
         }
 
         timeStamp.getAndIncrement();
-        return fileDistributionMap.get(fileName).getPrimaryRep();
+        return fileDistributionMap.get(fileName).getReplicas();
     }
 
     private FileDistribution createFile(String fileName) {
