@@ -2,12 +2,11 @@ package replicaserver;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 public class ReplicaServer {
-
-    public int REGISTRY_PORT = 1900;
 
     private final ReplicaMetadata replicaMetadata;
 
@@ -17,8 +16,8 @@ public class ReplicaServer {
 
     public void runServer() {
         try {
-            ReplicaServerClientInterface obj = new ReplicaServerClient();
-            Naming.rebind(getDomainName(), obj);
+            ReplicaServerClientInterface obj = new ReplicaServerClient(replicaMetadata.getDir());
+            Naming.rebind(replicaMetadata.getDomainName(), obj);
         } catch (RemoteException e) {
             System.out.println("[Replication ID:" + replicaMetadata.getIdentifer() + "] Remote exception during binding the object");
             e.printStackTrace();
@@ -26,9 +25,5 @@ public class ReplicaServer {
             System.out.println("[Replication ID:" + replicaMetadata.getIdentifer() + "] Malformed URL exception during binding the object");
             e.printStackTrace();
         }
-    }
-
-    private String getDomainName() {
-        return "rmi://" + replicaMetadata.getIp() + ":" + replicaMetadata.getPort() + "/replica_" + replicaMetadata.getIdentifer();
     }
 }

@@ -1,5 +1,6 @@
-package client;
+package client.actions;
 
+import client.response.Response;
 import lombok.AllArgsConstructor;
 import masterserver.MasterServerClientInterface;
 
@@ -9,8 +10,8 @@ public class WriteAction implements Action {
     private final String content;
 
     @Override
-    public void executeAction(MasterServerClientInterface masterServerClientInterface) {
-
+    public Response executeAction(MasterServerClientInterface masterServerClientInterface) {
+        return null;
     }
 
     @Override

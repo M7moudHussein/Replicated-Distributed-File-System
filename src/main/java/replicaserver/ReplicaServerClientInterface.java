@@ -1,6 +1,6 @@
 package replicaserver;
 
-import masterserver.FileContent;
+import masterserver.FileData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,10 +21,9 @@ public interface ReplicaServerClientInterface extends Remote {
      * @throws IOException
      * @throws RemoteException
      */
-    public WriteMessage write(long txnID, long msgSeqNum, FileContent data) throws RemoteException, IOException;
+    public WriteMessage write(long txnID, long msgSeqNum, FileData data) throws RemoteException, IOException;
 
-    public FileContent read(String fileName) throws FileNotFoundException,
-            IOException, RemoteException;
+    public FileData read(String fileName) throws FileNotFoundException, RemoteException, IOException;
 
     /**
      *

@@ -61,13 +61,13 @@ public class ServerMain {
             String ip = address[0].trim();
             String port = address[1].trim();
 
-            String dir = "~";
+            String dir = "~/replica_dir_" + serverID;
             if (data.length == 2) {
                 dir = data[1].trim();
             }
 
             if(dir.isEmpty())
-                dir = "~";
+                dir = "~/replica_dir_" + serverID;
 
             replicasMetadata.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), serverID++));
         }

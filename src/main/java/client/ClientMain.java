@@ -1,15 +1,14 @@
 package client;
 
+import client.actions.Action;
 import masterserver.MasterServer;
 import masterserver.MasterServerClientInterface;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -28,8 +27,6 @@ public class ClientMain {
             action.executeAction(masterServer);
             System.out.println(action.toString());
         }
-
-
     }
 
     static List<Action> parseActionsFile(final String fileName) {

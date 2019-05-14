@@ -4,13 +4,10 @@ import replicaserver.ReplicaMetadata;
 import replicaserver.WriteMessage;
 
 import java.io.*;
-import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MasterServerClient extends UnicastRemoteObject implements MasterServerClientInterface {
 
@@ -19,8 +16,21 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
     private boolean isTerminated = false;
     private List<ReplicaMetadata> replicas;
 
-    private long timeStamp = 0;
-    private long transactionId = 0;
+    private AtomicLong timeStamp;
+    private AtomicLong transactionId;
+
+    public MasterServerClient(List<ReplicaMetadata> replicas) throws InterruptedException, RemoteException {
+        super();
+        fileDistributionMap = new HashMap<>();
+        this.replicas = replicas;
+        this.timeStamp = new AtomicLong();
+        transactionId = new AtomicLong();
+        if (replicas.size() < NUMBER_OF_FILE_REPLICAS)
+            throw new RuntimeException("Not Sufficient number of replicas");
+        Thread heartbeatThread = new Thread(this::heartBeatChecking);
+        heartbeatThread.join();
+    }
+
 
     public void heartBeatChecking() {
         while (!isTerminated) {
@@ -35,25 +45,14 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
         }
     }
 
-
-    public MasterServerClient(List<ReplicaMetadata> replicas) throws InterruptedException, RemoteException {
-        super();
-        fileDistributionMap = new HashMap<String, FileDistribution>();
-        if (replicas.size() < NUMBER_OF_FILE_REPLICAS)
-            throw new RuntimeException("Not Sufficient number of replicas");
-        this.replicas = replicas;
-        Thread heartbeatThread = new Thread(this::heartBeatChecking);
-        heartbeatThread.join();
-    }
-
-
     @Override
-    public ReplicaMetadata[] read(String fileName) throws IOException {
-        if (!fileDistributionMap.containsKey(fileName))
+    public ReplicaMetadata read(String fileName) throws FileNotFoundException, RemoteException {
+        if (!fileDistributionMap.containsKey(fileName)) {
             throw new FileNotFoundException(fileName);
+        }
 
-        ++timeStamp;
-        return fileDistributionMap.get(fileName).getReplicas();
+        timeStamp.getAndIncrement();
+        return fileDistributionMap.get(fileName).getPrimaryRep();
     }
 
     private void createFile(String fileName) {
@@ -73,16 +72,16 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
     }
 
     @Override
-    public WriteMessage write(String fileName, FileContent data) {
+    public WriteMessage write(String fileName, FileData data) {
 
-        ++timeStamp;
+        timeStamp.getAndIncrement();
 
         if (!fileDistributionMap.containsKey(fileName)) {
             createFile(fileName);
         }
 
 
-        return new WriteMessage(++transactionId, timeStamp, fileDistributionMap.get(fileName).getPrimaryRep());
+        return new WriteMessage(transactionId.incrementAndGet(), timeStamp.get(), fileDistributionMap.get(fileName).getPrimaryRep());
     }
 
 
