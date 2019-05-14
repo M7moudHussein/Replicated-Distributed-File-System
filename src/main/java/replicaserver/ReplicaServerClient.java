@@ -2,8 +2,7 @@ package replicaserver;
 
 import masterserver.FileData;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,9 +24,28 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         this.workingDirectory = directory;
     }
 
+    private void appendToFile(FileData data) throws IOException {
+        FileWriter fw = new FileWriter(data.getFileName(), true);
+        fw.write(data.getFileContent());
+        fw.close();
+    }
+
     @Override
     public WriteMessage write(long txnID, long msgSeqNum, FileData data) throws RemoteException {
-        return null;
+        // initial simple implementation for testing
+        fileLocks.putIfAbsent(data.getFileName(), new ReentrantLock());
+        Lock fileLock = fileLocks.get(data.getFileName());
+        fileLock.lock();
+        try {
+            appendToFile(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO: throw e but do not forget to unlock
+        }
+        fileLock.unlock();
+
+        // TODO: there is no loc variable here to send in constructor
+        return new WriteMessage(txnID, msgSeqNum, null);
     }
 
     @Override
@@ -52,6 +70,8 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
 
     private String readFileContent(String fileName) throws IOException {
         Path filePath = Paths.get(workingDirectory, fileName);
+        System.out.println(filePath);
+
         if(!Files.exists(filePath)) {
             throw new FileNotFoundException();
         }

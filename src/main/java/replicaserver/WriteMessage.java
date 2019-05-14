@@ -45,8 +45,10 @@ public class WriteMessage implements Serializable {
 	public void setLoc(ReplicaMetadata loc) {
 		this.loc = loc;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "TID: " + transactionId + ", timeStamp: " + timeStamp + ", loc: TODO"; // + loc.getDomainName();
+	}
 
 }
