@@ -55,7 +55,7 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
         return fileDistributionMap.get(fileName).getPrimaryRep();
     }
 
-    private void createFile(String fileName) {
+    private FileDistribution createFile(String fileName) {
         Random random = new Random();
         ReplicaMetadata[] fileReplicas = new ReplicaMetadata[NUMBER_OF_FILE_REPLICAS];
         Set<Integer> takenReplica = new HashSet<>();
@@ -68,7 +68,9 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
             takenReplica.add(curIdx);
         }
 
-        fileDistributionMap.put(fileName, new FileDistribution(fileReplicas[0], fileReplicas));
+        FileDistribution fileDistribution = new FileDistribution(fileReplicas[0], fileReplicas);
+        fileDistributionMap.put(fileName, fileDistribution);
+        return fileDistribution;
     }
 
     @Override
@@ -76,12 +78,16 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
         System.out.println(fileName + " inside write");
         timeStamp.getAndIncrement();
 
+        FileDistribution fileDistribution = null;
         if (!fileDistributionMap.containsKey(fileName)) {
-            createFile(fileName);
+            fileDistribution = createFile(fileName);
         }
 
 
-        return new WriteMessage(transactionId.incrementAndGet(), timeStamp.get(), fileDistributionMap.get(fileName).getPrimaryRep());
+        return new WriteMessage(transactionId.incrementAndGet(),
+                                timeStamp.get(),
+                                fileDistributionMap.get(fileName).getPrimaryRep(),
+                                fileDistribution);
     }
 
 

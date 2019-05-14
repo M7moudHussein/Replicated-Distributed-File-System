@@ -1,50 +1,24 @@
 package replicaserver;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import masterserver.FileDistribution;
+
 import java.io.Serializable;
+
+@Setter
+@Getter
+@AllArgsConstructor
 
 public class WriteMessage implements Serializable {
 
 	private long transactionId;
 	private  long timeStamp;
 	private ReplicaMetadata loc;
+	private FileDistribution fileDistribution;
 
-	
-	public WriteMessage(long transactionId, long timeStamp, ReplicaMetadata loc) {
-		this.transactionId = transactionId;
-		this.timeStamp = timeStamp;
-		this.loc = loc;
-	}
-
-
-	public long getTransactionId() {
-		return transactionId;
-	}
-
-
-	public void setTransactionId(long transactionId) {
-		this.transactionId = transactionId;
-	}
-
-
-	public long getTimeStamp() {
-		return timeStamp;
-	}
-
-
-	public void setTimeStamp(long timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-
-	public ReplicaMetadata getLoc() {
-		return loc;
-	}
-
-
-	public void setLoc(ReplicaMetadata loc) {
-		this.loc = loc;
-	}
 
 	@Override
 	public String toString() {
