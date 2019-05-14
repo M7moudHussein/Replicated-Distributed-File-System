@@ -30,8 +30,7 @@ public class WriteAction implements Action {
             return new Response(ResponseError.MASTER_NO_RESPONSE);
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: why does write throw this error? **review all errors**
-            return new Response(ResponseError.FILE_NOT_FOUND);
+            return new Response(ResponseError.REPLICA_IO_EXCEPTION);
         }
 
         ReplicaServerClientInterface primaryReplicaInterface;
@@ -49,9 +48,6 @@ public class WriteAction implements Action {
         try {
             result = primaryReplicaInterface.write(writeMessage.getTransactionId(),
                     1, data);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return new Response(ResponseError.FILE_NOT_FOUND);
         } catch (RemoteException e) {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_REMOTE_ERROR);

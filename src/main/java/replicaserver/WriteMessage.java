@@ -48,7 +48,7 @@ public class WriteMessage implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TID: " + transactionId + ", timeStamp: " + timeStamp + ", loc: TODO"; // + loc.getDomainName();
+		return "TID: " + transactionId + ", timeStamp: " + timeStamp + ", loc: " + loc.getDomainName();
 	}
 
 }

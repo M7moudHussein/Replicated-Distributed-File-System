@@ -18,10 +18,12 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
 
     private final Map<String, Lock> fileLocks;
     private final String workingDirectory;
+    private ReplicaMetadata loc;
 
-    protected ReplicaServerClient(String directory) throws RemoteException {
+    protected ReplicaServerClient(ReplicaMetadata loc) throws RemoteException {
         this.fileLocks = Collections.synchronizedMap(new HashMap<>());
-        this.workingDirectory = directory;
+        this.workingDirectory = loc.getDir();
+        this.loc = loc;
     }
 
     private void appendToFile(FileData data) throws IOException {
@@ -31,7 +33,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
     }
 
     @Override
-    public WriteMessage write(long txnID, long msgSeqNum, FileData data) throws RemoteException {
+    public WriteMessage write(long txnID, long msgSeqNum, FileData data) throws IOException {
         // initial simple implementation for testing
         fileLocks.putIfAbsent(data.getFileName(), new ReentrantLock());
         Lock fileLock = fileLocks.get(data.getFileName());
@@ -40,12 +42,12 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
             appendToFile(data);
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: throw e but do not forget to unlock
+            throw e;
         }
-        fileLock.unlock();
-
-        // TODO: there is no loc variable here to send in constructor
-        return new WriteMessage(txnID, msgSeqNum, null);
+        finally{
+            fileLock.unlock();
+        }
+        return new WriteMessage(txnID, msgSeqNum, loc);
     }
 
     @Override
