@@ -47,7 +47,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         finally{
             fileLock.unlock();
         }
-        return new WriteMessage(txnID, msgSeqNum, loc);
+        return new WriteMessage(txnID, msgSeqNum, loc, null);
     }
 
     @Override
@@ -63,6 +63,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         } finally {
             fileLock.unlock();
         }
+
         return new FileData(fileName, fileContent);
     }
 
