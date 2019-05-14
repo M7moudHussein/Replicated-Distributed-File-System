@@ -27,7 +27,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
     }
 
     private void appendToFile(FileData data) throws IOException {
-        FileWriter fw = new FileWriter(data.getFileName(), true);
+        FileWriter fw = new FileWriter(getFilePath(data.getFileName()).toString(), true);
         fw.write(data.getFileContent());
         fw.close();
     }
@@ -55,7 +55,13 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         fileLocks.putIfAbsent(fileName, new ReentrantLock());
         Lock fileLock = fileLocks.get(fileName);
         fileLock.lock();
-        String fileContent = readFileContent(fileName);
+        String fileContent = null;
+        try {
+            fileContent = readFileContent(fileName);
+        } catch (Exception e) {
+            fileLock.unlock();
+            throw e;
+        }
         fileLock.unlock();
         return new FileData(fileName, fileContent);
     }
@@ -71,8 +77,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
     }
 
     private String readFileContent(String fileName) throws IOException {
-        Path filePath = Paths.get(workingDirectory, fileName);
-        System.out.println(filePath);
+        Path filePath = getFilePath(fileName);
 
         if(!Files.exists(filePath)) {
             throw new FileNotFoundException();
@@ -80,4 +85,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         return new String(Files.readAllBytes(filePath));
     }
 
+    private Path getFilePath(String fileName) {
+        return Paths.get(workingDirectory, fileName);
+    }
 }

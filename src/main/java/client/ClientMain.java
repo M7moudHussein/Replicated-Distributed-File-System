@@ -1,6 +1,7 @@
 package client;
 
 import client.actions.Action;
+import client.response.Response;
 import masterserver.MasterServer;
 import masterserver.MasterServerClientInterface;
 
@@ -24,8 +25,9 @@ public class ClientMain {
         List<Action> actions = parseActionsFile(SAMPLE_ACTIONS_FILE);
         MasterServerClientInterface masterServer = (MasterServerClientInterface) Naming.lookup(MasterServer.DOMAIN_NAME);
         for(Action action : actions) {
-            action.executeAction(masterServer);
-            System.out.println(action.toString());
+            Response response = action.executeAction(masterServer);
+            System.out.println(action);
+            System.out.println(response);
         }
     }
 

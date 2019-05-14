@@ -1,3 +1,6 @@
+# Replica server directories
+replica_server_*/
+
 # Compiled class file
 *.class
 

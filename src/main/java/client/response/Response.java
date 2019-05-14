@@ -20,4 +20,9 @@ public class Response {
     public boolean hasError() {
         return responseError != null;
     }
+
+    @Override
+    public String toString() {
+        return "Response -> " + (hasError() ? "Error: " + this.responseError : "Content: " + this.result);
+    }
 }

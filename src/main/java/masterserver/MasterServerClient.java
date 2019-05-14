@@ -73,7 +73,7 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
 
     @Override
     public WriteMessage write(String fileName, FileData data) {
-
+        System.out.println(fileName + " inside write");
         timeStamp.getAndIncrement();
 
         if (!fileDistributionMap.containsKey(fileName)) {

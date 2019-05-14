@@ -13,4 +13,9 @@ public enum ResponseError {
     private ResponseError(final String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    @Override
+    public String toString() {
+        return this.errorMessage;
+    }
 }

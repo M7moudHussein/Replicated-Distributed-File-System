@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -61,13 +62,15 @@ public class ServerMain {
             String ip = address[0].trim();
             String port = address[1].trim();
 
-            String dir = "~/replica_dir_" + serverID;
+            String dir = "";
+            String defaultDirectory = Paths.get(System.getProperty("user.dir"), "replica_server_" + serverID).toString();
             if (data.length == 2) {
                 dir = data[1].trim();
             }
 
-            if(dir.isEmpty())
-                dir = "~/replica_dir_" + serverID;
+            if(dir.isEmpty()) {
+                dir = defaultDirectory;
+            }
 
             replicasMetadata.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), serverID++));
         }

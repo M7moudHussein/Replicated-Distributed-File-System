@@ -21,6 +21,7 @@ public class MasterServer {
     public void runMaster() {
         try {
             Naming.rebind(MasterServer.DOMAIN_NAME, new MasterServerClient(replicasMetadata));
+            System.out.println("Server is running");
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
