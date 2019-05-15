@@ -3,6 +3,8 @@ package client.actions;
 import client.response.Response;
 import client.response.ResponseError;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import masterserver.FileData;
 import masterserver.MasterServerClientInterface;
 import replicaserver.ReplicaMetadata;
@@ -15,6 +17,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 @AllArgsConstructor
+@Setter
+@Getter
+
 public class WriteAction implements Action {
     private final String fileName;
     private final String content;
@@ -67,4 +72,5 @@ public class WriteAction implements Action {
     public String toString() {
         return "[Write Action] FileName:{" + fileName + "}, Content:{" + content + "}";
     }
+
 }

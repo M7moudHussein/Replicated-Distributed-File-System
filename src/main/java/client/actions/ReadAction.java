@@ -4,6 +4,8 @@ import client.response.Response;
 import client.response.ResponseError;
 import client.transaction.Transaction;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import masterserver.FileData;
 import masterserver.MasterServerClientInterface;
 import replicaserver.ReplicaMetadata;
@@ -15,6 +17,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 @AllArgsConstructor
+@Setter
+@Getter
+
 public class ReadAction implements Action {
     private final String fileName;
 

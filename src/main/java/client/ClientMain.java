@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class ClientMain {
@@ -60,9 +58,9 @@ public class ClientMain {
             System.out.println("read from file");
             System.out.println(new File(fileName).getAbsolutePath());
             sc = new Scanner(new File(fileName));
+
             while(sc.hasNextLine()) {
                 String line = sc.nextLine();
-                System.out.println(line);
                 if(!line.equals(TRANSACTIONS_DELIMITER))
                     actions.add(actionFactory.buildAction(line));
                 else if(!actions.isEmpty()){
