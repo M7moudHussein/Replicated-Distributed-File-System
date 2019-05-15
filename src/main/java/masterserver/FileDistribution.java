@@ -21,7 +21,7 @@ public class FileDistribution implements Serializable {
     public void removeReplicas(List<ReplicaMetadata> failedReplicas) {
         List<ReplicaMetadata> replicasList = new ArrayList<>(Arrays.asList(replicas));
         replicasList.remove(failedReplicas);
-        replicas = (ReplicaMetadata[]) replicasList.toArray();
+        replicas = replicasList.toArray(new ReplicaMetadata[0]);
         primaryRep = replicas.length > 0 ? replicas[0] : null;
     }
 }

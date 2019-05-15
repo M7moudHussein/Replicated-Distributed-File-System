@@ -34,10 +34,10 @@ public class ReplicaMetadata implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null || !(obj instanceof ReplicaMetadata)) {
+        if (!(obj instanceof ReplicaMetadata)) {
             return false;
         }
         ReplicaMetadata metadata = (ReplicaMetadata) obj;
-        return ip.equals(metadata.ip) && dir.equals(metadata.dir) && port == metadata.port && identifer == metadata.identifer;
+        return ip.equals(metadata.ip) && dir.equals(metadata.dir) && port == metadata.port && identifier == metadata.identifier;
     }
 }

@@ -79,9 +79,9 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
             } catch (RemoteException|NotBoundException e) {
             }
             if(replicaAlive) {
-                System.out.println("Replica Server {" + replicaMetadata.getIdentifer() + "} is still alive");
+                System.out.println("Replica Server {" + replicaMetadata.getIdentifier() + "} is still alive");
             } else {
-                System.out.println("Replica Server {" + replicaMetadata.getIdentifer() + "} is currently dead");
+                System.out.println("Replica Server {" + replicaMetadata.getIdentifier() + "} is currently dead");
                 newOfflineReplicas.add(replicaMetadata);
             }
         }
@@ -98,10 +98,10 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
             } catch (RemoteException|NotBoundException e) {
             }
             if(replicaAlive) {
-                System.out.println("Replica Server {" + replicaMetadata.getIdentifer() + "} is back online");
+                System.out.println("Replica Server {" + replicaMetadata.getIdentifier() + "} is back online");
                 newOnlineReplicas.add(replicaMetadata);
             } else {
-                System.out.println("Replica Server {" + replicaMetadata.getIdentifer() + "} is still dead");
+                System.out.println("Replica Server {" + replicaMetadata.getIdentifier() + "} is still dead");
             }
         }
         return newOnlineReplicas;
