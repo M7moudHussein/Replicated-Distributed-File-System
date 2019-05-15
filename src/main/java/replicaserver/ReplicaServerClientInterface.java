@@ -39,7 +39,8 @@ public interface ReplicaServerClientInterface extends Remote {
      * @throws MessageNotFoundException
      * @throws RemoteException
      */
-    public boolean commit(long txnID, long numOfMsgs) throws MessageNotFoundException, RemoteException;
+    public boolean commit(long txnID, long numOfMsgs) throws MessageNotFoundException,
+            RemoteException, IOException, NotBoundException;
 
     /**
      * * @param txnID: the ID of the transaction to which this message relates
@@ -47,5 +48,5 @@ public interface ReplicaServerClientInterface extends Remote {
      * @return true for acknowledgment
      * @throws RemoteException
      */
-    public boolean abort(long txnID) throws RemoteException;
+    public boolean abort(long txnID) throws RemoteException, NotBoundException;
 }

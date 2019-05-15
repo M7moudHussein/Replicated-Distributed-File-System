@@ -2,6 +2,7 @@ package client.actions;
 
 import client.response.Response;
 import client.response.ResponseError;
+import client.transaction.Transaction;
 import lombok.AllArgsConstructor;
 import masterserver.FileData;
 import masterserver.MasterServerClientInterface;
@@ -18,7 +19,8 @@ public class ReadAction implements Action {
     private final String fileName;
 
     @Override
-    public Response executeAction(MasterServerClientInterface masterServerClientInterface) {
+    public Response executeAction(MasterServerClientInterface masterServerClientInterface,
+                                  long txnID, long msgSeqNum) {
         ReplicaMetadata primaryReplicaMetadata = null;
         try {
             primaryReplicaMetadata = masterServerClientInterface.read(fileName)[0];
@@ -52,7 +54,7 @@ public class ReadAction implements Action {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_IO_EXCEPTION);
         }
-        return new Response(result.getFileContent());
+        return new Response(result.toString());
     }
 
     @Override

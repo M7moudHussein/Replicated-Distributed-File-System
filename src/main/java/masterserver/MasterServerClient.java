@@ -21,7 +21,7 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
 
     public MasterServerClient(List<ReplicaMetadata> replicas) throws InterruptedException, RemoteException {
         super();
-        fileDistributionMap = new HashMap<>();
+        fileDistributionMap = Collections.synchronizedMap(new HashMap<>());
         this.replicas = replicas;
         this.timeStamp = new AtomicLong();
         transactionId = new AtomicLong();
@@ -55,6 +55,11 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
         return fileDistributionMap.get(fileName).getReplicas();
     }
 
+    @Override
+    public long getNewTransactionID() throws RemoteException {
+        return transactionId.getAndIncrement();
+    }
+
     private FileDistribution createFile(String fileName) {
         Random random = new Random();
         ReplicaMetadata[] fileReplicas = new ReplicaMetadata[NUMBER_OF_FILE_REPLICAS];
@@ -74,20 +79,18 @@ public class MasterServerClient extends UnicastRemoteObject implements MasterSer
     }
 
     @Override
-    public WriteMessage write(String fileName, FileData data) {
+    public WriteMessage write(String fileName, FileData data, long txnID) {
         System.out.println(fileName + " inside write");
         timeStamp.getAndIncrement();
 
-        FileDistribution fileDistribution = null;
-        if (!fileDistributionMap.containsKey(fileName)) {
-            fileDistribution = createFile(fileName);
-        }
+        if (!fileDistributionMap.containsKey(fileName))
+            createFile(fileName);
 
 
-        return new WriteMessage(transactionId.incrementAndGet(),
+        return new WriteMessage(txnID,
                                 timeStamp.get(),
                                 fileDistributionMap.get(fileName).getPrimaryRep(),
-                                fileDistribution);
+                                fileDistributionMap.get(fileName));
     }
 
 

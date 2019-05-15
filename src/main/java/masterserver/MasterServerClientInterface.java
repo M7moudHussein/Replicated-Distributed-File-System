@@ -28,6 +28,8 @@ public interface MasterServerClientInterface extends Remote {
      * @throws RemoteException
      * @throws IOException
      */
-    public WriteMessage write(String fileName, FileData data) throws RemoteException, IOException;
+    public WriteMessage write(String fileName, FileData data, long txnID) throws RemoteException, IOException;
 
+
+    public long getNewTransactionID() throws  RemoteException;
 }

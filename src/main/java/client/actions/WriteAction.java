@@ -20,11 +20,13 @@ public class WriteAction implements Action {
     private final String content;
 
     @Override
-    public Response executeAction(MasterServerClientInterface masterServerClientInterface) {
+    public Response executeAction(MasterServerClientInterface masterServerClientInterface,
+                                  long txnID, long msgSeqNum) {
+
         WriteMessage writeMessage;
         FileData data = new FileData(fileName, content);
         try {
-            writeMessage = masterServerClientInterface.write(fileName, data);
+            writeMessage = masterServerClientInterface.write(fileName, data, txnID);
         } catch (RemoteException e) {
             e.printStackTrace();
             return new Response(ResponseError.MASTER_NO_RESPONSE);
@@ -46,8 +48,8 @@ public class WriteAction implements Action {
 
         WriteMessage result;
         try {
-            result = primaryReplicaInterface.write(writeMessage.getTransactionId(),
-                    1, data, writeMessage.getFileDistribution());
+            result = primaryReplicaInterface.write(writeMessage.getTransactionId(), msgSeqNum
+                                    , data, writeMessage.getFileDistribution());
         } catch (RemoteException e) {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_REMOTE_ERROR);
@@ -58,7 +60,7 @@ public class WriteAction implements Action {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_NOT_BOUND);
         }
-        return new Response(result.toString());
+        return new Response(result);
     }
 
     @Override
