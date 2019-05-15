@@ -79,8 +79,6 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         if(numOfMsgs > transactions.get(txnID).size())
             numOfMsgs = transactions.get(txnID).size();
 
-
-
 //        Collections.sort(transactions.get(txnID));
         int cntWrittenMsgs = 0;
         transactions.get(txnID).sort(Comparator.comparing(TransactionOperation::getMsgSeqNo));
@@ -129,6 +127,11 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         }
 
         transactions.remove(txnID);
+        return true;
+    }
+
+    @Override
+    public boolean checkLiveness() {
         return true;
     }
 

@@ -49,4 +49,6 @@ public interface ReplicaServerClientInterface extends Remote {
      * @throws RemoteException
      */
     public boolean abort(long txnID) throws RemoteException, NotBoundException;
+
+    public boolean checkLiveness() throws RemoteException, NotBoundException;
 }

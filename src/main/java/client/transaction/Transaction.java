@@ -25,7 +25,7 @@ public class Transaction {
 
         for(Action action: actions) {
             if(!fileName.equals(action.getFileName()))
-                throw new IllegalArgumentException("Invalid multiple files at the same transasction");
+                throw new IllegalArgumentException("Invalid multiple files at the same transaction");
         }
     }
 

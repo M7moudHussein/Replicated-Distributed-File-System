@@ -59,7 +59,7 @@ public class ReadAction implements Action {
             e.printStackTrace();
             return new Response(ResponseError.REPLICA_IO_EXCEPTION);
         }
-        return new Response(result.toString());
+        return new Response(result.getFileContent());
     }
 
     @Override
