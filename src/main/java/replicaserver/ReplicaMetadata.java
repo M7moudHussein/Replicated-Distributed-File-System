@@ -29,4 +29,13 @@ public class ReplicaMetadata implements Serializable {
     public String getDomainName() {
         return "rmi://" + ip + ":" + port + "/replica_" + identifer;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof ReplicaMetadata)) {
+            return false;
+        }
+        ReplicaMetadata metadata = (ReplicaMetadata) obj;
+        return ip.equals(metadata.ip) && dir.equals(metadata.dir) && port == metadata.port && identifer == metadata.identifer;
+    }
 }
