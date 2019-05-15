@@ -1,6 +1,5 @@
 package replicaserver;
 
-import client.transaction.Transaction;
 import masterserver.FileData;
 import masterserver.FileDistribution;
 
@@ -41,7 +40,7 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         if(distribution != null && loc.getDomainName().equals(distribution.getPrimaryRep().getDomainName())){
             // This is a primary replica for this file, write to non-primary replicas
             for(ReplicaMetadata replica : distribution.getReplicas())
-                if(replica.getIdentifer() != loc.getIdentifer())
+                if(replica.getIdentifier() != loc.getIdentifier())
                     replica.getReplicaInterface().write(txnID, msgSeqNum, data, distribution);
         }
 
@@ -99,9 +98,9 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
 
         for(TransactionOperation operation: operations) {
             if(operation.getFileDistribution() != null &&
-                    operation.getFileDistribution().getPrimaryRep().getIdentifer() == loc.getIdentifer()) {
+                    operation.getFileDistribution().getPrimaryRep().getIdentifier() == loc.getIdentifier()) {
                 ReplicaMetadata[] repilcas = operation.getFileDistribution().getReplicas();
-                for(ReplicaMetadata replica: repilcas) if(replica.getIdentifer() != loc.getIdentifer())
+                for(ReplicaMetadata replica: repilcas) if(replica.getIdentifier() != loc.getIdentifier())
                     replica.getReplicaInterface().commit(txnID, numOfMsgs);
             }
         }
@@ -119,9 +118,9 @@ public class ReplicaServerClient extends UnicastRemoteObject implements ReplicaS
         List<TransactionOperation> operations = transactions.get(txnID);
         for(TransactionOperation operation: operations) {
             if(operation.getFileDistribution() != null &&
-                    operation.getFileDistribution().getPrimaryRep().getIdentifer() == loc.getIdentifer()) {
+                    operation.getFileDistribution().getPrimaryRep().getIdentifier() == loc.getIdentifier()) {
                 ReplicaMetadata[] repilcas = operation.getFileDistribution().getReplicas();
-                for(ReplicaMetadata replica: repilcas) if(replica.getIdentifer() != loc.getIdentifer())
+                for(ReplicaMetadata replica: repilcas) if(replica.getIdentifier() != loc.getIdentifier())
                     replica.getReplicaInterface().abort(txnID);
             }
         }

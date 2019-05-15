@@ -1,47 +1,43 @@
 package masterserver;
 
 import replicaserver.ReplicaMetadata;
-import replicaserver.ReplicaServer;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.RemoteServer;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ServerMain {
-    private static final int WAIT_INTERVAL = 5000;
+    //    private static final int WAIT_INTERVAL = 5000;
     private static final String REPLICA_SERVERS_DATA_FILE = "repServers.txt";
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws IOException {
 
-        LocateRegistry.createRegistry(1900);
+//        LocateRegistry.createRegistry(1900);
 
-        List<ReplicaMetadata> replicasMetadata =  parseReplicaMetaData();
-        List<Thread> replicasThread = new ArrayList<>();
+        List<ReplicaMetadata> replicasMetadata = parseReplicaMetaData();
+//        List<Thread> replicasThread = new ArrayList<>();
 
-        for (ReplicaMetadata replicaMetadata : replicasMetadata) {
-            ReplicaServer replica = new ReplicaServer(replicaMetadata);
-            Thread replicaThread = new Thread(replica::runServer);
-            replicasThread.add(replicaThread);
-            replicaThread.start();
-        }
+//        for (ReplicaMetadata replicaMetadata : replicasMetadata) {
+//            ReplicaServer replica = new ReplicaServer(replicaMetadata);
+//            Thread replicaThread = new Thread(replica::runServer);
+//            replicasThread.add(replicaThread);
+//            replicaThread.start();
+//        }
 
-        Thread.sleep(WAIT_INTERVAL);
+//        Thread.sleep(WAIT_INTERVAL);
         MasterServer master = new MasterServer(replicasMetadata);
         master.runMaster();
     }
 
 
-    static  public List<ReplicaMetadata> parseReplicaMetaData() throws IOException {
-        List<ReplicaMetadata>  replicasMetadata= new ArrayList<>();
+    private static List<ReplicaMetadata> parseReplicaMetaData() throws IOException {
+        List<ReplicaMetadata> replicasMetadata = new ArrayList<>();
         FileReader fr = new FileReader(new File(REPLICA_SERVERS_DATA_FILE));
         BufferedReader br = new BufferedReader(fr);
 
@@ -51,7 +47,7 @@ public class ServerMain {
             if (line.isEmpty())
                 continue;
 
-            String[] data = line.split(",");
+            String[] data = line.split(" ");
 
             assert data.length < 3 && data.length > 0 : String.format("line \"%s\" must be on the form\"ip:port(, appDirectory)\"", line);
 
@@ -68,15 +64,15 @@ public class ServerMain {
                 dir = data[1].trim();
             }
 
-            if(dir.isEmpty()) {
+            if (dir.isEmpty()) {
                 dir = defaultDirectory;
             }
 
-            replicasMetadata.add(new ReplicaMetadata(ip, dir, Integer.valueOf(port), serverID++));
+            replicasMetadata.add(new ReplicaMetadata(ip, Integer.valueOf(port), serverID++, dir));
         }
         br.close();
         fr.close();
 
-        return  replicasMetadata;
+        return replicasMetadata;
     }
 }

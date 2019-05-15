@@ -7,7 +7,6 @@ import masterserver.MasterServer;
 import masterserver.MasterServerClientInterface;
 import replicaserver.MessageNotFoundException;
 import replicaserver.ReplicaMetadata;
-import replicaserver.ReplicaServer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +14,9 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 
 public class ClientMain {
@@ -23,23 +24,23 @@ public class ClientMain {
     public final static String DOMAIN_NAME = "rmi://localhost:1900/master_server";
     public static String SAMPLE_ACTIONS_FILE = "sample_actions.txt";
 
-    private final static  String TRANSACTIONS_DELIMITER = "";
+    private final static String TRANSACTIONS_DELIMITER = "";
 
     public static void main(String[] args) throws IOException, NotBoundException {
         MasterServerClientInterface masterServer = (MasterServerClientInterface) Naming.lookup(MasterServer.DOMAIN_NAME);
         List<Transaction> transactions = parseActionsFile(SAMPLE_ACTIONS_FILE, masterServer);
         System.out.println("transactions length" + transactions.size());
-        for(Transaction transaction: transactions) {
+        for (Transaction transaction : transactions) {
             long msgSeqNum = 1;
             List<ReplicaMetadata> primaryReplicas = new ArrayList<>();
             for (Action action : transaction.getActions()) {
                 Response response = action.executeAction(masterServer, transaction.getTxnID(), msgSeqNum++);
                 System.out.println(action);
                 System.out.println(response);
-                if(response.getWriteMessage() != null)
+                if (response.getWriteMessage() != null)
                     primaryReplicas.add(response.getWriteMessage().getLoc());
             }
-            for(ReplicaMetadata replica: primaryReplicas) {
+            for (ReplicaMetadata replica : primaryReplicas) {
                 try {
                     replica.getReplicaInterface().commit(transaction.getTxnID(), msgSeqNum);
                 } catch (MessageNotFoundException e) {
@@ -59,16 +60,16 @@ public class ClientMain {
             System.out.println(new File(fileName).getAbsolutePath());
             sc = new Scanner(new File(fileName));
 
-            while(sc.hasNextLine()) {
+            while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                if(!line.equals(TRANSACTIONS_DELIMITER))
+                if (!line.equals(TRANSACTIONS_DELIMITER))
                     actions.add(actionFactory.buildAction(line));
-                else if(!actions.isEmpty()){
+                else if (!actions.isEmpty()) {
                     transactions.add(new Transaction(masterServer.getNewTransactionID(), actions));
                     actions = new ArrayList<>();
                 }
             }
-            if(!actions.isEmpty())
+            if (!actions.isEmpty())
                 transactions.add(new Transaction(masterServer.getNewTransactionID(), actions));
 
         } catch (FileNotFoundException e) {

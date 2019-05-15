@@ -7,18 +7,6 @@
     <groupId>groupId</groupId>
     <artifactId>Replicated-Distributed-File-System</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -30,4 +18,91 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>3.8.0</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>server-jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <finalName>ServerJar</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>masterserver.ServerMain</mainClass>
+                                </manifest>
+                            </archive>
+                            <classifier>Core</classifier>
+                            <includes>
+                                <include>**/*.*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/test.*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>replica-jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <finalName>ReplicaJar</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>replicaserver.ReplicaServer</mainClass>
+                                </manifest>
+                            </archive>
+                            <classifier>Core</classifier>
+                            <includes>
+                                <include>**/*.*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/test.*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>client-jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <finalName>ClientJar</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>client.ClientMain</mainClass>
+                                </manifest>
+                            </archive>
+                            <classifier>Core</classifier>
+                            <includes>
+                                <include>**/*.*</include>
+                            </includes>
+                            <excludes>**/test.*</excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+        </plugins>
+    </build>
 </project>

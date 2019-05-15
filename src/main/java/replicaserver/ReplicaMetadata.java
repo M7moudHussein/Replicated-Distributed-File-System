@@ -14,8 +14,10 @@ import java.rmi.RemoteException;
 @Getter
 @AllArgsConstructor
 public class ReplicaMetadata implements Serializable {
-    private String ip, dir;
-    private int port, identifer;
+    private String ip;
+    private int port;
+    private int identifier;
+    private String dir;
 
     public ReplicaServerClientInterface getReplicaInterface() throws RemoteException, NotBoundException {
         try {
@@ -27,7 +29,7 @@ public class ReplicaMetadata implements Serializable {
     }
 
     public String getDomainName() {
-        return "rmi://" + ip + ":" + port + "/replica_" + identifer;
+        return "rmi://" + ip + ":" + port + "/replica_" + identifier;
     }
 
     @Override

@@ -1,3 +1,4 @@
-localhost:1900
-localhost:1900
-localhost:1900
+localhost:1900 /home/mahmoud/Replicated-Distributed-File-System/replica/1
+localhost:1900 /home/mahmoud/Replicated-Distributed-File-System/replica/2
+localhost:1900 /home/mahmoud/Replicated-Distributed-File-System/replica/3
+localhost:1900 /home/mahmoud/Replicated-Distributed-File-System/replica/4
