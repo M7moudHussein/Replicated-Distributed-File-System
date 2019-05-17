@@ -14,6 +14,8 @@ Execute the bash script stop_server.sh
 
 ```./stop_server.sh```
 
+
+### Warning:
 <aside class="warning">
 The replicas and the server are run as background processes. Running the start_server.sh script multiple times without executing stop_server.sh script leads to consuming the machine resources by the background processes.
 </aside>
